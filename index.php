@@ -32,12 +32,15 @@
     <hr />
 
     <nav>
+
+      <div id="topic">
       <ul>
-        <div id="topic">
+
         <li><a href="signup.php">S'inscrire</a></li>
         <li><a href="login.php">Connexion</a></li>
+
       </ul>
-    </div>
+</div>
 
     </nav>
 
@@ -50,7 +53,7 @@
     <hr />
 
     <footer>
-      &copy; <?php echo date('Y'); ?> BattleGo
+      &copy; 2017 BattleGo
     </footer>
   </body>
 </html>
