@@ -55,21 +55,56 @@ $pokemon = $r->fetch();
 
       ici, on peut mettre la liste des duels de ce pokemon.
 
-      <h3>Lancer un duel !</h3>
 
-      <form action="battle.php?my_token=<?php echo $user['token']; ?>&src_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
-        <div>
-          Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...<br />
-          <select name="select">
-            <option value="valeur1">Boo</option>
-            <option value="valeur2">Mokumokuren</option>
-          </select>
-        </div>
+      <!-- si le pokemon ne m'appartient pas -->
+      <?php
 
-        <div>
-          <input type="submit" value="Lancer le duel">
-        </div>
-      </form>
+      if ($pokemon['user_id'] != $user['id']) {
+        ?>
+
+
+        <h3>Lancer un duel !</h3>
+
+        <form action="battle.php?my_token=<?php echo $user['token']; ?>&src_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
+          <div>
+            Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...<br />
+            <select name="select">
+
+
+            <?php
+                              // Chargement des pokemons...
+                              $sql = 'SELECT *
+                                      FROM `pokemons`
+                                      WHERE user_id = ?';
+
+                              $req = $db->prepare($sql);
+                              $req->execute(array($user['id']));
+                              // On affiche chaque pokemon un à un.
+                              while ($pokemon = $req->fetch())
+                              {
+                                ?>
+
+
+
+              <option value="valeur1"><?php echo $pokemon['name']; ?></option>
+
+            <?php
+                              }
+                              ?>
+
+            </select>
+          </div>
+
+          <div>
+            <input type="submit" value="Lancer le duel">
+          </div>
+        </form>
+
+      <?php
+
+      }
+
+      ?>
     </article>
   </body>
 </html>
