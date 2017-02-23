@@ -49,7 +49,7 @@ $pokemon = $r->fetch();
     <hr />
 
     <article>
-      <h2>Nom du pokémon ici (par exemple Boo)</h2>
+      <h2><?php echo $pokemon['name']; ?></h2>
 
       <h3>Activité du pokemon</h3>
 
