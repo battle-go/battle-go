@@ -53,8 +53,27 @@ $pokemon = $r->fetch();
 
       <h3>Activité du pokemon</h3>
 
-      ici, on peut mettre la liste des duels de ce pokemon.
 
+      <?php
+                        // Chargement des pokemons...
+                        $sql = 'SELECT *
+                                FROM `pokemons`, `attacks`
+                                WHERE src_pokemon_id = ?
+                                  AND attacks.src_pokemon_id = pokemons.id';
+
+                        $req = $db->prepare($sql);
+                        $req->execute(array($pokemon['id']));
+                        // On affiche chaque pokemon un à un.
+                        while ($attack = $req->fetch())
+                        {
+                          ?>
+
+                            <p><?php echo $attack['created_at']; ?>, attaque vers le pokemon <?php echo $attack['dst_pokemon_id']; ?></p>
+
+      <?php
+                        }
+                        ?>
+      <hr>
 
       <!-- si le pokemon ne m'appartient pas -->
       <?php
@@ -68,7 +87,7 @@ $pokemon = $r->fetch();
         <form action="battle.php?my_token=<?php echo $user['token']; ?>&src_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
           <div>
             Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...<br />
-            <select name="select">
+            <select name="dst_pokemon_id">
 
 
             <?php
@@ -86,7 +105,7 @@ $pokemon = $r->fetch();
 
 
 
-              <option value="valeur1"><?php echo $pokemon['name']; ?></option>
+              <option value="<?php echo $pokemon['id']; ?>"><?php echo $pokemon['name']; ?></option>
 
             <?php
                               }
