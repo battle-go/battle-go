@@ -32,15 +32,23 @@ require_once '_include/authenticate-user.php';
       <h2>Duel</h2>
 
       <div>
-        pokemon du dresseur adverse
+        <!-- pokemon du dresseur adverse -->
+        <!-- pour y arriver, il faut utiliser la variable PHP : $_POST['dst_pokemon_id'] -->
+
+        <?php echo $_POST['dst_pokemon_id']; ?>
       </div>
 
       <div>
-        pokemon du dresseur connecté
+        <!-- pokemon du dresseur connecté -->
+        <!-- pour y arriver, il faut utiliser la variable PHP : $_GET['src_pokemon_id'] -->
+
+        <?php echo $_GET['src_pokemon_id']; ?>
       </div>
 
       <form action="battle-post.php" method="post">
         <!-- Ici, il faut mettre un bouton pour soumettre une attaque vers le pokemon adverse. -->
+
+        <input type="submit">
 
         <!-- Apres chaque attaque, la page battle-post.php doit enregistrer l'attaque dans la table 'attacks',
         et ensuite rediriger sur la page battle.php pour que l'on puisse continuer le combat. -->
