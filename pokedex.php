@@ -38,12 +38,12 @@ require_once '_include/authenticate-user.php';
       <table>
 
         <?php
-                          // Chargement du legume...
+                          // Chargement des pokemons...
                           $sql = 'SELECT *
                                   FROM `pokemons`';
                           $req = $db->prepare($sql);
                           $req->execute(array());
-                          // On affiche chaque legume un à un.
+                          // On affiche chaque pokemon un à un.
                           while ($pokemon = $req->fetch())
                           {
                             ?>
