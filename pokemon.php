@@ -49,27 +49,81 @@ $pokemon = $r->fetch();
     <hr />
 
     <article>
-      <h2>Nom du pokémon ici (par exemple Boo)</h2>
+      <h2><?php echo $pokemon['name']; ?></h2>
 
       <h3>Activité du pokemon</h3>
 
-      ici, on peut mettre la liste des duels de ce pokemon.
 
-      <h3>Lancer un duel !</h3>
+      <?php
+                        // Chargement des pokemons...
+                        $sql = 'SELECT *
+                                FROM `pokemons`, `attacks`
+                                WHERE src_pokemon_id = ?
+                                  AND attacks.src_pokemon_id = pokemons.id';
 
-      <form action="battle.php?my_token=<?php echo $user['token']; ?>&src_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
-        <div>
-          Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...<br />
-          <select name="select">
-            <option value="valeur1">Boo</option>
-            <option value="valeur2">Mokumokuren</option>
-          </select>
-        </div>
+                        $req = $db->prepare($sql);
+                        $req->execute(array($pokemon['id']));
+                        // On affiche chaque pokemon un à un.
+                        while ($attack = $req->fetch())
+                        {
+                          ?>
 
-        <div>
-          <input type="submit" value="Lancer le duel">
-        </div>
-      </form>
+                            <p><?php echo $attack['created_at']; ?>, attaque vers le pokemon <?php echo $attack['dst_pokemon_id']; ?></p>
+
+      <?php
+                        }
+                        ?>
+      <hr>
+
+      <!-- si le pokemon ne m'appartient pas -->
+      <?php
+
+      if ($pokemon['user_id'] != $user['id']) {
+        ?>
+
+
+        <h3>Lancer un duel !</h3>
+
+        <form action="battle.php?my_token=<?php echo $user['token']; ?>&src_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
+          <div>
+            Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...<br />
+            <select name="dst_pokemon_id">
+
+
+            <?php
+                              // Chargement des pokemons...
+                              $sql = 'SELECT *
+                                      FROM `pokemons`
+                                      WHERE user_id = ?';
+
+                              $req = $db->prepare($sql);
+                              $req->execute(array($user['id']));
+                              // On affiche chaque pokemon un à un.
+                              while ($pokemon = $req->fetch())
+                              {
+                                ?>
+
+
+
+              <option value="<?php echo $pokemon['id']; ?>"><?php echo $pokemon['name']; ?></option>
+
+            <?php
+                              }
+                              ?>
+
+            </select>
+          </div>
+
+          <div>
+            <input type="submit" value="Lancer le duel">
+          </div>
+        </form>
+
+      <?php
+
+      }
+
+      ?>
     </article>
   </body>
 </html>
