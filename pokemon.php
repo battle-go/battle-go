@@ -35,6 +35,22 @@ $pokemon = $r->fetch();
   <body>
     <header>
       <h1>BattleGo</h1>
+
+      <link rel="stylesheet" media="screen" href="style.css">
+
+          <!-- CSS  -->
+             <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+             <!-- Compiled and minified CSS -->
+             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+
+             <!--  Scripts-->
+             <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+             <!-- Compiled and minified JavaScript -->
+             <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
+
+
     </header>
 
     <hr />
@@ -82,14 +98,16 @@ $pokemon = $r->fetch();
         ?>
 
 
+  <div id="battle">
+
         <h3>Lancer un duel !</h3>
 
         <form action="battle.php?my_token=<?php echo $user['token']; ?>&src_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
-          <div>
+
             Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...<br />
             <select name="dst_pokemon_id">
-
-
+            </div>
+<div>
             <?php
                               // Chargement des pokemons...
                               $sql = 'SELECT *
@@ -114,7 +132,7 @@ $pokemon = $r->fetch();
             </select>
           </div>
 
-          <div>
+          <div id="launch">
             <input type="submit" value="Lancer le duel">
           </div>
         </form>

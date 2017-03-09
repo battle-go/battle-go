@@ -69,7 +69,7 @@ require_once '_include/authenticate-user.php';
 
         <tr>
           <td><?php echo $pokemon['name'] ?></td>
-          <td>Il m'appartient ? <?php if ($user['id'] == $pokemon['user_id']) { echo 'oui'; } else { echo 'non'; } ?></td>
+          <td> <?php if ($user['id'] == $pokemon['user_id']) { echo 'possédé'; } else { echo 'non possédé'; } ?></td>
           <td><a href="pokemon.php?my_token=<?php echo $user['token']; ?>&pokemon_id=<?php echo $pokemon['id']; ?>">Detail</a></td>
         </tr>
 
