@@ -2,18 +2,18 @@
 
 require_once '_include/authenticate-user.php';
 
-// Si il n'y a pas l'ID du pokémon à ennemi.
+// Si il n'y a pas l'ID du Pokémon à ennemi.
 if (!isset($_GET['dst_pokemon_id'])) {
   exit("Le parametre 'dst_pokemon_id' n'est pas present dans l'URL");
 }
 
-// Si il n'y a pas l'ID du pokémon que l'on possède.
+// Si il n'y a pas l'ID du Pokémon que l'on possède.
 if (!isset($_POST['src_pokemon_id'])) {
   exit("Le parametre 'src_pokemon_id' n'est pas present dans les données du formulaire");
 }
 
 
-// Chargement du pokémon énnemi...
+// Chargement du Pokémon ennemi...
 $sql = 'SELECT *
         FROM `pokemons`
         WHERE id = ?';
@@ -29,7 +29,7 @@ if ($r->rowCount() != 1) {
 $pokemon_ennemi = $r->fetch();
 
 
-// Chargement du pokémon allié...
+// Chargement du Pokémon allié...
 $sql = 'SELECT *
         FROM `pokemons`
         WHERE id = ?';
@@ -95,7 +95,7 @@ $pokemon_allie = $r->fetch();
         Points de vie total : <?php echo $pokemon_ennemi['live']; ?><br />
 
         <?php
-                        // Chargement du nombre d'attaques envoyées par notre Pokémon vers le Pokémon énnemi...
+                        // Chargement du nombre d'attaques envoyées par notre Pokémon vers le Pokémon ennemi...
                         $sql = 'SELECT COUNT(attacks.id) AS received_attacks
                                 FROM `pokemons`, `attacks`
                                 WHERE src_pokemon_id = ?
@@ -134,7 +134,7 @@ $pokemon_allie = $r->fetch();
         Points de vie total : <?php echo $pokemon_allie['live']; ?><br />
 
         <?php
-                        // Chargement du nombre d'attaques envoyées par notre Pokémon vers le Pokémon énnemi...
+                        // Chargement du nombre d'attaques envoyées par notre Pokémon vers le Pokémon ennemi...
                         $sql = 'SELECT COUNT(attacks.id) AS received_attacks
                                 FROM `pokemons`, `attacks`
                                 WHERE src_pokemon_id = ?

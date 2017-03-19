@@ -2,12 +2,12 @@
 
 require_once '_include/authenticate-user.php';
 
-// Si il n'y a pas l'ID du pokémon à ennemi.
+// Si il n'y a pas l'ID du Pokémon à ennemi.
 if (!isset($_GET['dst_pokemon_id'])) {
   exit("Le parametre 'dst_pokemon_id' n'est pas present dans l'URL");
 }
 
-// Si il n'y a pas l'ID du pokémon que l'on possède.
+// Si il n'y a pas l'ID du Pokémon que l'on possède.
 if (!isset($_GET['src_pokemon_id'])) {
   exit("Le parametre 'src_pokemon_id' n'est pas present dans l'URL");
 }
@@ -25,7 +25,7 @@ $req->execute(array(
   'created_at'     => date('Y-m-d H:i:s')
 ));
 
-// Redirection vers la page du pokémon énnemi...
+// Redirection vers la page du Pokémon ennemi...
 header('Location: pokemon.php?my_token=' . $user['token'] . '&pokemon_id=' . $_GET['dst_pokemon_id']);
 
 ?>

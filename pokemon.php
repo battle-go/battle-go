@@ -2,7 +2,7 @@
 
 require_once '_include/authenticate-user.php';
 
-// Si il n'y a pas l'ID du pokémon à afficher sur la page.
+// Si il n'y a pas l'ID du Pokémon à afficher sur la page.
 if (!isset($_GET['pokemon_id'])) {
   exit("Le parametre 'pokemon_id' n'est pas present dans l'URL");
 }
@@ -79,7 +79,7 @@ $pokemon = $r->fetch();
 
       <?php
         if ($pokemon['user_id'] == $user['id']) {
-          echo "<p>Ce pokémon vous appartient.</p>";
+          echo "<p>Ce Pokémon vous appartient.</p>";
         }
       ?>
 
@@ -158,7 +158,7 @@ $pokemon = $r->fetch();
         <h3>Lancer un duel !</h3>
 
         <p>
-          Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...
+          Choisissez le Pokémon avec lequel vous voulez affronter ce Pokémon...
         </p>
 
         <form action="battle.php?my_token=<?php echo $user['token']; ?>&dst_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
