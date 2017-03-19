@@ -67,14 +67,30 @@ $pokemon = $r->fetch();
     <article>
       <h2><?php echo $pokemon['name']; ?></h2>
 
-      <h3>Activité du pokemon</h3>
+      <p>
+        Vie : <?php echo $pokemon['live']; ?><br />
+        Puissance : <?php echo $pokemon['power']; ?><br />
+        Vitesse : <?php echo $pokemon['speed']; ?>
+      </p>
 
+      <p>
+        <img src="<?php echo $pokemon['image_url']; ?>">
+      </p>
 
       <?php
-                        // Chargement des pokemons...
+        if ($pokemon['user_id'] == $user['id']) {
+          echo "<p>Ce pokémon vous appartient.</p>";
+        }
+      ?>
+
+      <h3>Liste des attaques reçues par ce pokemon</h3>
+
+      <ol>
+        <?php
+                        // Chargement des attaques reçues...
                         $sql = 'SELECT *
                                 FROM `pokemons`, `attacks`
-                                WHERE src_pokemon_id = ?
+                                WHERE dst_pokemon_id = ?
                                   AND attacks.src_pokemon_id = pokemons.id';
 
                         $req = $db->prepare($sql);
@@ -84,12 +100,50 @@ $pokemon = $r->fetch();
                         {
                           ?>
 
-                            <p><?php echo $attack['created_at']; ?>, attaque vers le pokemon <?php echo $attack['dst_pokemon_id']; ?></p>
+                            <li>
+                              Le <?php echo $attack['created_at']; ?>,
+                              réception d'une attaque vers le
+                              <a href="pokemon.php?my_token=<?php echo $user['token']; ?>&pokemon_id=<?php echo $attack['src_pokemon_id']; ?>">
+                                <strong>pokemon <?php echo $attack['name']; ?></strong>
+                                <img src="<?php echo $attack['image_url']; ?>" height="50">
+                              </a>
+                            </li>
 
-      <?php
+                          <?php
                         }
-                        ?>
-      <hr>
+        ?>
+      </ol>
+
+      <h3>Liste des attaques envoyées par ce pokemon</h3>
+
+      <ol>
+        <?php
+                        // Chargement des attaques envoyées...
+                        $sql = 'SELECT *
+                                FROM `pokemons`, `attacks`
+                                WHERE src_pokemon_id = ?
+                                  AND attacks.dst_pokemon_id = pokemons.id';
+
+                        $req = $db->prepare($sql);
+                        $req->execute(array($pokemon['id']));
+                        // On affiche chaque pokemon un à un.
+                        while ($attack = $req->fetch())
+                        {
+                          ?>
+
+                            <li>
+                              Le <?php echo $attack['created_at']; ?>,
+                              envoie d'une attaque vers le
+                              <a href="pokemon.php?my_token=<?php echo $user['token']; ?>&pokemon_id=<?php echo $attack['dst_pokemon_id']; ?>">
+                                <strong>pokemon <?php echo $attack['name']; ?></strong>
+                                <img src="<?php echo $attack['image_url']; ?>" height="50">
+                              </a>
+                            </li>
+
+                          <?php
+                        }
+        ?>
+      </ol>
 
       <!-- si le pokemon ne m'appartient pas -->
       <?php
@@ -97,45 +151,42 @@ $pokemon = $r->fetch();
       if ($pokemon['user_id'] != $user['id']) {
         ?>
 
+        <hr>
 
-  <div id="battle">
+        <div id="battle">
 
         <h3>Lancer un duel !</h3>
 
-        <form action="battle.php?my_token=<?php echo $user['token']; ?>&src_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
+        <p>
+          Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...
+        </p>
 
-            Choisissez le pokémon avec lequel vous voulez affronter ce pokémon...<br />
-            <select name="dst_pokemon_id">
-            </div>
-<div>
+        <form action="battle.php?my_token=<?php echo $user['token']; ?>&dst_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
+          <select name="src_pokemon_id">
             <?php
-                              // Chargement des pokemons...
-                              $sql = 'SELECT *
-                                      FROM `pokemons`
-                                      WHERE user_id = ?';
+              // Chargement des pokemons...
+              $sql = 'SELECT *
+                      FROM `pokemons`
+                      WHERE user_id = ?';
 
-                              $req = $db->prepare($sql);
-                              $req->execute(array($user['id']));
-                              // On affiche chaque pokemon un à un.
-                              while ($pokemon = $req->fetch())
-                              {
-                                ?>
+              $req = $db->prepare($sql);
+              $req->execute(array($user['id']));
+              // On affiche chaque pokemon que l'on possède (allié), un à un.
+              while ($pokemon = $req->fetch())
+              {
+                ?>
 
+                <option value="<?php echo $pokemon['id']; ?>"><?php echo $pokemon['name']; ?></option>
 
+                <?php
+              }
+            ?>
+          </select>
 
-              <option value="<?php echo $pokemon['id']; ?>"><?php echo $pokemon['name']; ?></option>
-
-            <?php
-                              }
-                              ?>
-
-            </select>
-          </div>
-
-          <div id="launch">
-            <input type="submit" value="Lancer le duel">
-          </div>
+          <input type="submit" value="Lancer le duel">
         </form>
+
+      </div>
 
       <?php
 
@@ -143,5 +194,11 @@ $pokemon = $r->fetch();
 
       ?>
     </article>
+
+    <script>
+      $(document).ready(function() {
+        $('select').material_select();
+      });
+    </script>
   </body>
 </html>

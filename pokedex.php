@@ -52,7 +52,7 @@ require_once '_include/authenticate-user.php';
     <article>
       <h2>Pokedex</h2>
 
-      <table>
+      <table style="background-color: #ccc">
 
         <?php
                           // Chargement des pokemons...
@@ -69,6 +69,7 @@ require_once '_include/authenticate-user.php';
 
         <tr>
           <td><?php echo $pokemon['name'] ?></td>
+          <td><img src="<?php echo $pokemon['image_url'] ?>" height="100"></td>
           <td> <?php if ($user['id'] == $pokemon['user_id']) { echo 'possédé'; } else { echo 'non possédé'; } ?></td>
           <td><a href="pokemon.php?my_token=<?php echo $user['token']; ?>&pokemon_id=<?php echo $pokemon['id']; ?>">Detail</a></td>
         </tr>
