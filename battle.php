@@ -2,6 +2,48 @@
 
 require_once '_include/authenticate-user.php';
 
+// Si il n'y a pas l'ID du Pokémon à ennemi.
+if (!isset($_GET['dst_pokemon_id'])) {
+  exit("Le parametre 'dst_pokemon_id' n'est pas present dans l'URL");
+}
+
+// Si il n'y a pas l'ID du Pokémon que l'on possède.
+if (!isset($_POST['src_pokemon_id'])) {
+  exit("Le parametre 'src_pokemon_id' n'est pas present dans les données du formulaire");
+}
+
+
+// Chargement du Pokémon ennemi...
+$sql = 'SELECT *
+        FROM `pokemons`
+        WHERE id = ?';
+
+$r = $db->prepare($sql);
+
+$r->execute(array($_GET['dst_pokemon_id']));
+
+if ($r->rowCount() != 1) {
+  exit('Ce pokemon ennemi est introuvable.');
+}
+
+$pokemon_ennemi = $r->fetch();
+
+
+// Chargement du Pokémon allié...
+$sql = 'SELECT *
+        FROM `pokemons`
+        WHERE id = ?';
+
+$r = $db->prepare($sql);
+
+$r->execute(array($_POST['src_pokemon_id']));
+
+if ($r->rowCount() != 1) {
+  exit('Ce pokemon allie est introuvable.');
+}
+
+$pokemon_allie = $r->fetch();
+
 ?>
 
 <!DOCTYPE html>
@@ -46,33 +88,86 @@ require_once '_include/authenticate-user.php';
     <hr />
 
     <article>
-      <h2>Duel</h2>
+      <p style="text-align: right">
+        <img src="<?php echo $pokemon_ennemi['image_url']; ?>" ?><br />
+        <?php echo $pokemon_ennemi['name']; ?><br />
+        <br />
+        Points de vie total : <?php echo $pokemon_ennemi['live']; ?><br />
 
-      <div>
-        <!-- pokemon du dresseur adverse -->
-        <!-- pour y arriver, il faut utiliser la variable PHP : $_POST['dst_pokemon_id'] -->
+        <?php
+                        // Chargement du nombre d'attaques envoyées par notre Pokémon vers le Pokémon ennemi...
+                        $sql = 'SELECT COUNT(attacks.id) AS received_attacks
+                                FROM `pokemons`, `attacks`
+                                WHERE src_pokemon_id = ?
+                                  AND dst_pokemon_id = ?
+                                  AND attacks.src_pokemon_id = pokemons.id';
 
-        <?php echo $_POST['dst_pokemon_id']; ?>
-      </div>
+                        $req = $db->prepare($sql);
+                        $req->execute(array($_POST['src_pokemon_id'], $_GET['dst_pokemon_id']));
 
-      <div>
-        <!-- pokemon du dresseur connecté -->
-        <!-- pour y arriver, il faut utiliser la variable PHP : $_GET['src_pokemon_id'] -->
+                        if ($req->rowCount() != 1) {
+                          exit('Le comptage des degats est impossible.');
+                        }
 
-        <?php echo $_GET['src_pokemon_id']; ?>
-      </div>
+                        $attacks = $req->fetch();
+        ?>
 
-      <form action="battle-post.php" method="post">
-        <!-- Ici, il faut mettre un bouton pour soumettre une attaque vers le pokemon adverse. -->
+        Dégâts recus : <?php echo $attacks['received_attacks']; ?> * <?php echo $pokemon_allie['power']; ?><br />
+        Points de vie restants : <?php echo $pokemon_ennemi['live'] - ($attacks['received_attacks'] * $pokemon_allie['power']); ?><br />
+        <br />
+        Statut :
+        <?php
+          if (($attacks['received_attacks'] * $pokemon_allie['power']) > $pokemon_ennemi['live']) {
+            echo "<strong style='color: red'>KO!</strong>";
+          } else {
+            echo "<strong style='color: green'>VIVANT</strong>";
+          }
+        ?>
+      </p>
 
-        <input type="submit">
+      <h2>VERSUS</h2>
 
-        <!-- Apres chaque attaque, la page battle-post.php doit enregistrer l'attaque dans la table 'attacks',
-        et ensuite rediriger sur la page battle.php pour que l'on puisse continuer le combat. -->
+      <p style="text-align: left">
+        <img src="<?php echo $pokemon_allie['image_url']; ?>" ?><br />
+        <?php echo $pokemon_allie['name']; ?><br />
+        <br />
+        Points de vie total : <?php echo $pokemon_allie['live']; ?><br />
 
-        <!-- Le combat s'arrete quand un des 2 pokemons a 0 ou un nombre negatif de points de vie. -->
+        <?php
+                        // Chargement du nombre d'attaques envoyées par notre Pokémon vers le Pokémon ennemi...
+                        $sql = 'SELECT COUNT(attacks.id) AS received_attacks
+                                FROM `pokemons`, `attacks`
+                                WHERE src_pokemon_id = ?
+                                  AND dst_pokemon_id = ?
+                                  AND attacks.src_pokemon_id = pokemons.id';
 
-        <!-- Remarque : Pour compter le nombre de point de vie d'un pokemon, il faut faire une requete SQL avec la fonction sum() -->
+                        $req = $db->prepare($sql);
+                        $req->execute(array($_GET['dst_pokemon_id'], $_POST['src_pokemon_id']));
+
+                        if ($req->rowCount() != 1) {
+                          exit('Le comptage des degats est impossible.');
+                        }
+
+                        $attacks = $req->fetch();
+        ?>
+
+        Dégâts recus : <?php echo $attacks['received_attacks']; ?> * <?php echo $pokemon_ennemi['power']; ?><br />
+        Points de vie restants : <?php echo $pokemon_allie['live'] - ($attacks['received_attacks'] * $pokemon_ennemi['power']); ?><br />
+        <br />
+        Statut :
+        <?php
+          if (($attacks['received_attacks'] * $pokemon_ennemi['power']) > $pokemon_allie['live']) {
+            echo "<strong style='color: red'>KO!</strong>";
+          } else {
+            echo "<strong style='color: green'>VIVANT</strong>";
+          }
+        ?>
+      </p>
+
+      <hr />
+
+      <form action="battle-post.php?my_token=<?php echo $user['token']; ?>&src_pokemon_id=<?php echo $pokemon_allie['id']; ?>&dst_pokemon_id=<?php echo $pokemon_ennemi['id']; ?>" method="post">
+        <input type="submit" value="Lancer une attaque !">
       </form>
     </article>
   </body>
