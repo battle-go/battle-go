@@ -50,7 +50,8 @@ $pokemon = $r->fetch();
              <!-- Compiled and minified JavaScript -->
              <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js"></script>
 
-
+             <!-- Show the radar -->
+             <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
     </header>
 
     <hr />
@@ -72,6 +73,32 @@ $pokemon = $r->fetch();
         Puissance : <?php echo $pokemon['power']; ?><br />
         Vitesse : <?php echo $pokemon['speed']; ?>
       </p>
+
+      <canvas id="myChart" width="400" height="400"></canvas>
+
+      <script>
+      var ctx = document.getElementById("myChart");
+      var data = {
+        labels: ["Vie", "Puissance", "Vitesse"],
+        datasets: [
+                {
+                    label: "Caractéristiques",
+                    backgroundColor: "rgba(179,181,198,0.2)",
+                    borderColor: "rgba(179,181,198,1)",
+                    pointBackgroundColor: "rgba(179,181,198,1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(179,181,198,1)",
+                    data: [<?php echo $pokemon['live']; ?>, <?php echo $pokemon['power']; ?>, <?php echo $pokemon['speed']; ?>]
+                }
+            ]
+        };
+      var myChart = new Chart(ctx, {
+          type: 'radar',
+          data: data,
+          options: {}
+      });
+      </script>
 
       <p>
         <img src="<?php echo $pokemon['image_url']; ?>">
