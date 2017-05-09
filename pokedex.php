@@ -70,7 +70,8 @@ require_once '_include/authenticate-user.php';
         <tr>
           <td><?php echo $pokemon['name'] ?></td>
           <td><img src="<?php echo $pokemon['image_url'] ?>" height="100"></td>
-          <td> <?php if ($user['id'] == $pokemon['user_id']) { echo 'possédé'; } else { echo 'non possédé'; } ?></td>
+          <td> <?php if ($user['id'] == $pokemon['user_id']) { echo '<img src="picture\possede & non possede\possede.gif" />', '<img src="picture/possede & non possede/083 5g.gif" />' ; }   else { echo '<img src="picture\possede & non possede\pokeba10.png" /> <img src="picture\possede & non possede\Sprite_3_f_--.png" />'; } ?></td>
+
           <td><a href="pokemon.php?my_token=<?php echo $user['token']; ?>&pokemon_id=<?php echo $pokemon['id']; ?>">Detail</a></td>
         </tr>
 
