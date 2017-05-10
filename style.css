@@ -1,7 +1,8 @@
 body
 {
-  background-image: url(picture/fond.jpg);
+  background-image: url(picture/fond2.jpg);
   background-attachment: fixed;
+  background-size: 1950px;
   cursor: url(picture/cursor/cursor.png), pointer;
 }
 
