@@ -189,7 +189,7 @@ $pokemon = $r->fetch();
         </p>
 
         <form action="battle.php?my_token=<?php echo $user['token']; ?>&dst_pokemon_id=<?php echo $pokemon['id']; ?>" method="post">
-          <select name="src_pokemon_id">
+          <select name="src_pokemon_id" required="required">
             <?php
               // Chargement des pokemons...
               $sql = 'SELECT *

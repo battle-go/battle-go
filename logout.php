@@ -19,6 +19,6 @@ $r->closeCursor();
 
 // Redirection vers la page d'accueil.
 
-header('Location: index.php');
+header('Location: index.html');
 
 ?>
